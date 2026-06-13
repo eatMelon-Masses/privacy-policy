@@ -1,11 +1,17 @@
-# TransLens Privacy Policy
+# Privacy Policies
 
-This repository hosts the public privacy policy pages used by TransLens and related Chrome extensions.
+This repository hosts the public privacy policy pages for Chrome extensions using GitHub Pages.
 
 ## Pages
 
-- `index.html` - TransLens privacy policy
+- [TransLens](https://eatmelon-masses.github.io/privacy-policy/extensions/translens/) - Language learning extension with AI-powered vocabulary annotation and SRS spaced repetition
 
-## Publishing
+## Structure
 
-This repository is intended for GitHub Pages.
+```
+extensions/
+└── translens/
+    └── index.html   - TransLens privacy policy
+```
+
+Add new extensions under `extensions/<extension-name>/index.html`.
