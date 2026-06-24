@@ -14,25 +14,36 @@
 </head>
 <body>
   <h1>Scraper Privacy Policy</h1>
-  <p><strong>Effective Date:</strong> June 20, 2026</p>
+  <p><strong>Effective Date:</strong> June 24, 2026</p>
 
   <h2>1. Overview</h2>
-  <p>Scraper is a Chrome extension that extracts structured data from webpages. Users select elements by clicking on them; the extension auto-detects similar list items, previews results in a side panel, and exports data as CSV or Excel files. An optional AI mode generates extraction selectors from a natural-language description using the user's own API key.</p>
+  <p>Scraper is a Chrome extension for web data extraction. It allows you to hover, click, and select data on any webpage, automatically detects list structures, and exports data to CSV or Excel files. The extension includes built-in presets for 20+ popular websites, a smart scroll system for dynamic content, and a network response analyzer that reads page API responses for richer structured data. All standard data processing happens locally in your browser.</p>
 
   <h2>2. Data Handled by the Extension</h2>
   <p>Scraper handles the following data to provide its core functionality:</p>
   <ul>
-    <li><strong>Webpage DOM content:</strong> After the user activates the extension, visible page content is read to detect selectable elements, recognise list structures, and extract text from clicked elements.</li>
+    <li><strong>Web page DOM data:</strong> After the user activates the extension, visible page content is read to detect selectable elements, recognise list structures, and extract text from clicked elements.</li>
+    <li><strong>Network API responses:</strong> When the scraper is activated, fetch and XHR responses from the current page are intercepted in browser memory for local structured data analysis. This data never leaves your browser.</li>
     <li><strong>Settings:</strong> Selected AI provider, AI model name, custom endpoint URL, and related configuration.</li>
     <li><strong>API credentials:</strong> API keys entered by the user for OpenAI, Anthropic, or a custom OpenAI-compatible endpoint.</li>
+    <li><strong>Cached extraction plans:</strong> Successful extraction patterns (CSS selectors and field names) are cached locally per hostname to speed up re-extraction. No page content or user data is stored in the cache.</li>
     <li><strong>Screenshot (optional):</strong> Users may paste or upload a single screenshot (PNG / JPEG / WebP, max 4 MB) to help the AI better understand page layout. The screenshot is held only in browser memory for the current session and is never written to persistent storage.</li>
   </ul>
 
-  <h2>3. Local Storage</h2>
-  <p>Settings, API credentials, and lightweight UI state are stored locally using <code>chrome.storage.local</code>. Scraper does not operate a server and does not collect this data on a developer-controlled server. Screenshots are never stored — they exist only in the active browser session's memory and are discarded when the toolbar is closed or the page is refreshed.</p>
+  <h2>3. Local Processing</h2>
+  <p>Standard data extraction, list recognition, field matching, network response analysis, and file generation (CSV / Excel) happen entirely within your browser. Scraper does not operate a server and does not collect, store, or transmit any user data to developer-controlled servers.</p>
+  <ul>
+    <li>Webpage data is read from the DOM only after you click the extension and start scraping on the active tab.</li>
+    <li>Network API responses (fetch/XHR) are intercepted in browser memory for structured data analysis and never transmitted externally.</li>
+    <li>CSV and Excel files are generated locally using browser-side JavaScript.</li>
+    <li>No analytics, telemetry, or usage tracking is included.</li>
+  </ul>
 
-  <h2>4. Third-Party AI Services</h2>
-  <p>When the user enables optional AI extraction, Scraper sends the following data directly from the browser to the AI provider selected by the user:</p>
+  <h2>4. Local Storage</h2>
+  <p>Settings, API credentials, cached extraction plans (site pattern memory), and lightweight UI state are stored locally using <code>chrome.storage.local</code>. Scraper does not operate a server and does not collect this data on a developer-controlled server. Screenshots are never stored — they exist only in the active browser session's memory and are discarded when the toolbar is closed or the page is refreshed.</p>
+
+  <h2>5. AI Features (Optional)</h2>
+  <p>When you choose to use the optional AI-powered extraction, Scraper sends the following data directly from the browser to the AI provider selected by you:</p>
   <ul>
     <li>HTML snippets of the active webpage</li>
     <li>Page metadata (URL, hostname, title, meta description)</li>
@@ -41,40 +52,37 @@
   </ul>
   <p>Supported providers:</p>
   <ul>
-    <li>OpenAI (api.openai.com), if the user chooses OpenAI</li>
-    <li>Anthropic (api.anthropic.com), if the user chooses Anthropic</li>
-    <li>A custom OpenAI-compatible endpoint configured by the user (e.g. local Ollama or a remote server)</li>
+    <li><strong>OpenAI</strong> (api.openai.com), if the user chooses OpenAI</li>
+    <li><strong>Anthropic</strong> (api.anthropic.com), if the user chooses Anthropic</li>
+    <li>A <strong>custom OpenAI-compatible endpoint</strong> configured by the user (e.g. local Ollama or a remote server)</li>
   </ul>
-  <p>API credentials are sent only to the selected provider endpoint as required for authentication. The selected provider processes requests under its own terms and privacy policy. If the user provides a screenshot, it is sent to the same provider as an image attachment and is never stored or forwarded to any developer-operated server.</p>
+  <p>API credentials are sent only to the selected provider endpoint as required for authentication. The selected provider processes requests under its own terms and privacy policy. No data passes through any intermediate server operated by the extension developer. If the user provides a screenshot, it is sent to the same provider as an image attachment and is never stored or forwarded to any developer-operated server.</p>
 
-  <h2>5. Data Sharing</h2>
+  <h2>6. Data Sharing</h2>
   <p>Scraper does not sell user data, does not use user data for advertising, and does not share user data with data brokers or advertising networks. Webpage content, API credentials, and screenshots are transferred only as necessary to provide the user-requested extraction feature through the selected AI provider. No data passes through any intermediate server operated by the extension developer.</p>
 
-  <h2>6. Analytics and Tracking</h2>
-  <p>Scraper does not include analytics SDKs, tracking cookies, advertising code, affiliate code, or behavioral tracking. No usage data or scraping activity is reported to any external service.</p>
+  <h2>7. Analytics and Tracking</h2>
+  <p>Scraper does not include analytics SDKs, tracking cookies, advertising code, affiliate code, or behavioral tracking.</p>
 
-  <h2>7. Chrome Permissions</h2>
+  <h2>8. Chrome Permissions</h2>
   <ul>
-    <li><code>activeTab</code>: Accesses the current webpage's DOM only after the user clicks the extension popup and starts a scraping session.</li>
-    <li><code>scripting</code>: Programmatically injects the local content script into the active tab only after user activation.</li>
-    <li><code>storage</code>: Stores settings, API keys, and lightweight UI state locally on the user's device.</li>
+    <li><code>storage</code>: Saves settings, API credentials, and cached extraction plans locally.</li>
+    <li><code>activeTab</code> and <code>scripting</code>: Injects the scraper into the current webpage only after you click the extension to start scraping.</li>
     <li><code>sidePanel</code>: Opens Chrome's side panel to display the data preview table.</li>
-    <li>Host permissions for <code>https://api.openai.com/*</code> and <code>https://api.anthropic.com/*</code>: Used only when the user enables AI extraction with the respective provider.</li>
-    <li>Host permissions for <code>http://localhost/*</code>, <code>https://localhost/*</code>, <code>http://127.0.0.1/*</code>, and <code>https://127.0.0.1/*</code>: Used when the user configures a local AI endpoint.</li>
-    <li>Optional host permissions for custom <code>http://</code> and <code>https://</code> endpoints: Requested only when the user configures a custom remote endpoint at a domain not covered above.</li>
-    <li>Host access to <code>http://*/*</code> and <code>https://*/*</code> through the content script: Reads page content and injects visual overlays for element selection.</li>
+    <li>Host permissions for <code>https://api.openai.com/*</code>, <code>https://api.anthropic.com/*</code>, <code>http://localhost/*</code>, <code>https://localhost/*</code>, <code>http://127.0.0.1/*</code>, <code>https://127.0.0.1/*</code>: Sends AI extraction requests to built-in and local AI endpoints.</li>
+    <li>Optional host permissions for custom <code>http://</code> and <code>https://</code> endpoints: Requested only when you configure a custom remote endpoint.</li>
   </ul>
 
-  <h2>8. Limited Use Statement</h2>
-  <p>The use of information received from Chrome APIs adheres to the Chrome Web Store User Data Policy, including the Limited Use requirements. Scraper uses user data only to provide and improve its single purpose: structured web data extraction in the browser.</p>
+  <h2>9. Limited Use Statement</h2>
+  <p>The use of information received from Chrome APIs adheres to the Chrome Web Store User Data Policy, including the Limited Use requirements. Scraper uses user data only to provide its single purpose: web data extraction and export in the browser.</p>
 
-  <h2>9. Children's Privacy</h2>
+  <h2>10. Children's Privacy</h2>
   <p>Scraper is a general-purpose data extraction tool and is not directed to children under 13. Scraper does not knowingly collect personal information from children.</p>
 
-  <h2>10. Changes to This Policy</h2>
-  <p>This policy may be updated when Scraper changes its data handling practices. The current policy is available from the Chrome Web Store listing and the extension's privacy page.</p>
+  <h2>11. Changes to This Policy</h2>
+  <p>This policy may be updated when Scraper changes its data handling practices. The current policy should be made available from the Chrome Web Store listing and the extension settings page.</p>
 
-  <h2>11. Contact</h2>
+  <h2>12. Contact</h2>
   <p>For privacy questions, use the developer contact email listed on the Chrome Web Store listing.</p>
 </body>
 </html>
