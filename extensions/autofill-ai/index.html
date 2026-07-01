@@ -17,24 +17,25 @@
   <p><strong>Effective Date:</strong> July 1, 2026</p>
 
   <h2>1. Overview</h2>
-  <p>AutoFill AI is a Chrome extension that helps users fill web forms by extracting structured data from text they provide. The user pastes or reads clipboard content (such as a business card, resume, or address block), and the extension uses AI to extract structured information (name, email, phone, address, etc.) and automatically fills matching form fields on the current webpage. The extension includes a universal dropdown detection algorithm that works with any component library, a smart local caching system to speed up repeated operations, and an AI semantic matching fallback that resolves field mapping failures when local synonym matching cannot find a match. All standard data processing happens locally in your browser.</p>
+  <p>AutoFill AI is a Chrome extension that helps users fill web forms by extracting structured data from text they provide. The user pastes or reads clipboard content (such as a business card, resume, or address block), and the extension extracts structured information (name, email, phone, address, etc.) and automatically fills matching form fields on the current webpage. By default, all text parsing is performed locally in your browser using a built-in parser that supports JSON, key-value pairs, and auto-detection of phone numbers, emails, URLs, and ID cards — no AI API key or network connection required. Optionally, if you configure an AI provider, the extension can use AI for enhanced natural language extraction. The extension also includes a universal dropdown detection algorithm that works with any component library, a smart local caching system to speed up repeated operations, and an AI semantic matching fallback that resolves field mapping failures when local synonym matching cannot find a match. All standard data processing happens locally in your browser.</p>
 
   <h2>2. Data Handled by the Extension</h2>
   <p>AutoFill AI handles the following data to provide its core functionality:</p>
   <ul>
-    <li><strong>User-provided text:</strong> Text that you paste or read from clipboard is sent to your configured AI provider for structured data extraction.</li>
-    <li><strong>Web page form field attributes:</strong> After the user activates the extension, the extension scans visible form fields on the current page and reads their attributes (name, id, placeholder, aria-label, label text) to match extracted data to the correct fields. When local synonym-based matching fails for certain data keys, the unmatched keys and the remaining form field labels are sent to the AI provider for semantic analysis to determine the correct field mapping. The result is shown to the user with a clear indicator that the mapping was AI-guessed.</li>
+    <li><strong>User-provided text:</strong> Text that you paste or read from clipboard is parsed locally by default using the built-in parser (JSON, key-value pairs, regex auto-detection). If you have configured an AI provider and local parsing is insufficient, the text is sent to your configured AI provider for enhanced structured data extraction.</li>
+    <li><strong>Web page form field attributes:</strong> After the user activates the extension, the extension scans visible form fields on the current page and reads their attributes (name, id, placeholder, aria-label, label text) to match extracted data to the correct fields. When local synonym-based matching fails for certain data keys, the unmatched keys and the remaining form field labels are sent to the AI provider for semantic analysis to determine the correct field mapping (only if AI is configured). The result is shown to the user with a clear indicator that the mapping was AI-guessed.</li>
     <li><strong>Settings:</strong> Selected AI provider, AI model name, custom endpoint URL, and related configuration.</li>
-    <li><strong>API credentials:</strong> API keys entered by the user for OpenAI, Anthropic, or a custom OpenAI-compatible endpoint.</li>
-    <li><strong>Text extraction cache:</strong> AI extraction results are cached locally, keyed by a hash of the input text (first 500 characters), with a 24-hour expiry. This avoids repeated AI calls for identical text. The cache stores only the extracted key-value pairs (e.g., {name: "John", phone: "+1-555-0123"}) — not the original raw text.</li>
+    <li><strong>API credentials:</strong> API keys entered by the user for OpenAI, Anthropic, or a custom OpenAI-compatible endpoint (optional — not required for basic usage).</li>
+    <li><strong>Text extraction cache:</strong> Both local parser results and AI extraction results are cached locally, keyed by a hash of the input text (first 500 characters), with a 24-hour expiry. This avoids repeated parsing or AI calls for identical text. The cache stores only the extracted key-value pairs (e.g., {name: "John", phone: "+1-555-0123"}) — not the original raw text.</li>
     <li><strong>Form mapping cache:</strong> Form structure fingerprints (a hash of field count, field labels, and field types) are cached locally per URL path, with a 7-day expiry. When the same form structure is encountered again, the extension can skip the slower form-aware AI analysis. The fingerprint contains no raw page content — only a numeric hash and field count.</li>
   </ul>
 
   <h2>3. Local Processing</h2>
-  <p>Form field scanning, synonym-based field matching, dropdown option matching, value injection, and DOM event triggering happen entirely within your browser. AutoFill AI does not operate a server and does not collect, store, or transmit any user data to developer-controlled servers.</p>
+  <p>Text parsing, form field scanning, synonym-based field matching, dropdown option matching, value injection, and DOM event triggering happen entirely within your browser. AutoFill AI does not operate a server and does not collect, store, or transmit any user data to developer-controlled servers.</p>
   <ul>
+    <li>Text parsing (JSON, key-value pairs, phone/email/URL/ID card auto-detection) runs locally with no network requests.</li>
     <li>Webpage form fields are scanned only after you click the extension and trigger extraction on the active tab.</li>
-    <li>Field matching primarily uses local synonym mapping and attribute comparison. When local matching fails, an AI call is made to semantically analyze the unmatched keys against form field labels — this only sends the unmatched data keys and field labels, not the full page content.</li>
+    <li>Field matching primarily uses local synonym mapping and attribute comparison. When local matching fails and AI is configured, an AI call is made to semantically analyze the unmatched keys against form field labels — this only sends the unmatched data keys and field labels, not the full page content.</li>
     <li>Cache data (extraction results and form fingerprints) is stored and used entirely in the browser.</li>
     <li>No analytics, telemetry, or usage tracking is included.</li>
   </ul>
@@ -42,8 +43,8 @@
   <h2>4. Local Storage</h2>
   <p>Settings, API credentials, text extraction cache, and form mapping cache are stored locally using <code>chrome.storage.local</code>. AutoFill AI does not operate a server and does not collect this data on a developer-controlled server. All cache data auto-expires (text cache: 24 hours, form cache: 7 days) and can be manually cleared from the extension settings page at any time.</p>
 
-  <h2>5. AI Features</h2>
-  <p>AutoFill AI requires an AI provider for text extraction. When you click "Extract & Fill," the extension sends the following data directly from the browser to the AI provider selected by you:</p>
+  <h2>5. AI Features (Optional)</h2>
+  <p>AutoFill AI works without any AI configuration — the built-in local parser handles JSON, key-value pairs, and auto-detects phone numbers, emails, URLs, and ID cards. However, if you choose to configure an AI provider for enhanced natural language extraction, the extension sends the following data directly from the browser to the AI provider selected by you:</p>
   <ul>
     <li>The text you pasted or read from clipboard</li>
     <li>Form field labels and attributes (when form-aware extraction is used, to help the AI match data to specific fields)</li>
@@ -63,7 +64,7 @@
   <p>API credentials are sent only to the selected provider endpoint as required for authentication. The selected provider processes requests under its own terms and privacy policy. No data passes through any intermediate server operated by the extension developer.</p>
 
   <h2>6. Data Sharing</h2>
-  <p>AutoFill AI does not sell user data, does not use user data for advertising, and does not share user data with data brokers or advertising networks. Text you paste and form field attributes are transferred only as necessary to provide the user-requested extraction feature through the selected AI provider. No data passes through any intermediate server operated by the extension developer.</p>
+  <p>AutoFill AI does not sell user data, does not use user data for advertising, and does not share user data with data brokers or advertising networks. By default, all text parsing happens locally in your browser with no data transmitted externally. If you configure an AI provider, text you paste and form field attributes are transferred only as necessary to provide the enhanced extraction feature through the selected AI provider. No data passes through any intermediate server operated by the extension developer.</p>
 
   <h2>7. Analytics and Tracking</h2>
   <p>AutoFill AI does not include analytics SDKs, tracking cookies, advertising code, affiliate code, or behavioral tracking.</p>
